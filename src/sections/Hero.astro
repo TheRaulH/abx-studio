@@ -1,0 +1,128 @@
+---
+// Hero.astro
+import TypedServices from "../components/TypedServices.astro";
+
+const misServicios = [
+  "Producción Musical",
+  "Mezcla y Masterización",
+  "Diseño Sonoro",
+  "Composición de Beats",
+];
+---
+
+<section class="relative w-full h-full overflow-hidden bg-black">
+  <div class="w-full h-full lg:grid lg:grid-cols-2">
+    <div
+      class="relative z-20 flex flex-col justify-center
+      h-full w-full
+      px-6 sm:px-10 lg:px-16
+      pointer-events-none lg:pointer-events-auto
+      bg-gradient-to-t from-black via-black/60 to-transparent lg:bg-none"
+    >
+      <div
+        class="animate-fade-in-left max-w-2xl pointer-events-auto text-end flex flex-col items-end w-full"
+      >
+        <h3
+          class="text-gray-300 text-xl sm:text-2xl font-medium tracking-wide mb-2"
+        >
+          Bienvenidos a
+        </h3>
+
+        <h1
+          class="text-white font-bold leading-tight tracking-tight
+             text-[clamp(2.5rem,5vw,4.5rem)] lg:text-[clamp(3.5rem,4vw,5rem)]"
+        >
+          ABX STUDIO
+        </h1>
+
+        <div
+          class="mt-4 text-gray-400 font-light italic text-[clamp(1.2rem,2.5vw,1.8rem)] min-h-[1.6em]"
+        >
+          Especialistas en <br class="sm:hidden" />
+          <TypedServices services={misServicios} />
+        </div>
+        
+
+        <button
+            id="btn-start"
+          type="button"
+          class="cursor-pointer text-white font-bold relative text-[14px] w-[9em] h-[3em] mt-6
+         bg-linear-to-r from-cyan-500 via-teal-400 to-sky-600 bg-size[length:400%]
+         rounded-[30px] z-10 transition-all duration-300
+         
+         /* Efectos de Hover */
+         hover:bg-size[length:100%] hover:brightness-110 hover:-translate-y-0.5
+         hover:border-b-[6px] border-cyan-700
+         
+         /* Efectos de Click (Active) */
+         active:border-b-[2px] active:brightness-90 active:translate-y-[2px]
+         
+         /* Pseudo-elemento para el brillo/glow */
+         before:content-[''] before:absolute before:-inset-1.5
+         before:bg-linear-to-r before:from-cyan-500 before:via-teal-400 before:to-sky-600
+         before:bg-size[length:400%] before:-z-10 before:rounded-[35px]
+         before:transition-all before:duration-500
+         hover:before:blur-xl hover:before:opacity-100"
+        >
+          ENTRA YA
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="absolute inset-0 lg:relative lg:inset-auto
+      w-full h-full
+      flex items-center justify-center
+      z-10 lg:z-0"
+    >
+      <script>
+        import "@splinetool/viewer";
+      </script>
+      <spline-viewer
+        class="spline-3d-viewer"
+        url="https://prod.spline.design/aArjQKcSUen3aiS1/scene.splinecode"
+      >
+      </spline-viewer>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Lógica para el botón "ENTRA YA"
+  const btnStart = document.getElementById("btn-start");
+  if (btnStart) {
+    btnStart.addEventListener("click", () => {
+      // mandar al usuario a la sección de contacto
+      window.location.href = "/contact";
+    });
+  }
+</script>
+
+<style>
+  /* LÓGICA DEL VIEWER:
+     En lugar de anchos fijos (px), usamos porcentajes + escala para asegurar respuesta.
+     Esto evita que el canvas rompa el layout.
+  */
+  .spline-3d-viewer {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+  }
+
+  /* Ajustes específicos para móviles para centrar mejor el objeto 3D */
+  @media (max-width: 1023px) {
+    .spline-3d-viewer {
+      /* Hacemos el modelo un poco más grande en móvil para que luzca como fondo */
+      transform: scale(1.2) translateY(10%);
+      opacity: 0.8; /* Leve transparencia para no pelear con el texto */
+    }
+  }
+
+  /* Ajustes para escritorio */
+  @media (min-width: 1024px) {
+    .spline-3d-viewer {
+      transform: scale(1.3); /* Ligero zoom para llenar espacios */
+    }
+  }
+</style>

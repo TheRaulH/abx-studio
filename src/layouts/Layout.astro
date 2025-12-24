@@ -1,22 +1,79 @@
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+<html lang="es">
+  <head>
+    <!-- Básico -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+    <!-- SEO principal -->
+    <title>ABX STUDIO | Mezcla, Mastering y Beat Making Profesional</title>
+    <meta
+      name="description"
+      content="ABX STUDIO es un estudio de producción musical especializado en mezcla, mastering y beat making. Beats gratuitos y servicios de producción accesibles."
+    />
+    <meta
+      name="keywords"
+      content="ABX STUDIO, producción musical, mezcla, mastering, beat making, beats gratis, estudio de grabación"
+    />
+    <meta name="author" content="ABX STUDIO" />
+
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="yandex" content="index, follow" />
+
+    <link rel="canonical" href="https://tudominio.com" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="ABX STUDIO | Mezcla, Mastering y Beats"
+    />
+    <meta
+      property="og:description"
+      content="Estudio de producción musical. Mezcla, mastering y beat making profesional. Beats gratis disponibles."
+    />
+    <meta property="og:url" content="https://tudominio.com" />
+    <meta property="og:image" content="https://tudominio.com/og-image.jpg" />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ABX STUDIO | Producción Musical" />
+    <meta
+      name="twitter:description"
+      content="Mezcla, mastering y beat making profesional. Beats gratuitos y servicios accesibles."
+    />
+    <meta name="twitter:image" content="https://tudominio.com/og-image.jpg" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&family=Lato:wght@400;700&family=Khula:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/src/layouts/Global.css" />
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+  </head>
+  <body>
+    <slot />
+  </body>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MusicRecordingStudio",
+      "name": "ABX STUDIO",
+      "description": "Estudio de producción musical especializado en mezcla, mastering y beat making.",
+      "url": "https://tudominio.com",
+      "sameAs": [
+        "https://instagram.com/tuusuario",
+        "https://soundcloud.com/tuusuario"
+      ]
+    }
+  </script>
+</html>

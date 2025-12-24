@@ -1,0 +1,48 @@
+---
+const { label = "Colaborar", href = "/quote" } = Astro.props;
+---
+
+<a href={href} class="abx-btn animate-slide-in-right">
+  {label}
+</a>
+
+<style>
+  .abx-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    text-transform: uppercase;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.6);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    transition: all 0.4s ease;
+  }
+
+  /* Hover + focus */
+  .abx-btn:hover,
+  .abx-btn:focus-visible {
+    color: #ffffff;
+    background: #00d3f2; /* color marca */
+    border-color: #00d3f2;
+    text-shadow:
+      0 0 5px #ffffff,
+      0 0 10px #ffffff,
+      0 0 20px #ffffff;
+    box-shadow:
+      0 0 5px #00d3f2,
+      0 0 20px #00d3f2,
+      0 0 50px #00d3f2,
+      0 0 100px #00d3f2;
+  }
+
+  /* Estado activo */
+  .abx-btn:active {
+    transform: scale(0.97);
+  }
+</style>

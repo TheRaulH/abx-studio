@@ -1,0 +1,57 @@
+---
+// TypedServices.astro
+interface Props {
+  services: string[];
+}
+
+const { services } = Astro.props;
+---
+
+<div class="inline-block">
+  <div id="typed-strings" class="hidden">
+    {services.map((service) => <p>{service}</p>)}
+  </div>
+
+  <span id="typed" class="text-white font-bold italic"></span>
+</div>
+
+<script>
+  import Typed from "typed.js";
+
+  // Inicializamos cuando el DOM esté listo
+  document.addEventListener("astro:page-load", () => {
+    const options = {
+      stringsElement: "#typed-strings",
+      typeSpeed: 50,
+      backSpeed: 30,
+      backDelay: 1500, // Tiempo que se queda el texto antes de borrarse
+      loop: true,
+      smartBackspace: true,
+      cursorChar: "",
+    };
+
+    new Typed("#typed", options);
+  });
+
+  // Fallback para carga normal si no usas ViewTransitions
+  if (!window.hasOwnProperty("Astro")) {
+    const options = {
+      stringsElement: "#typed-strings",
+      typeSpeed: 50,
+      backSpeed: 30,
+      backDelay: 1500,
+      loop: true,
+      smartBackspace: true,
+      cursorChar: "_",
+    };
+    new Typed("#typed", options);
+  }
+</script>
+
+<style is:global>
+  /* Personalización del cursor */
+  .typed-cursor {
+    color: #4b5563; /* Un gris para que no distraiga demasiado */
+    margin-left: 4px;
+  }
+</style>

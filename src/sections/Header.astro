@@ -1,0 +1,236 @@
+---
+import ButtonCTA from "../components/ButtonCTA.astro";
+---
+
+<div class="h-min">
+  <!-- Banner promocional -->
+  <a
+    href="/promo"
+    id="promo-banner"
+    class="animate-fade-in-down w-full h-10 bg-gradient-to-r from-white to-gray-300 text-black flex items-center justify-center text-sm md:text-base font-semibold fixed top-0 left-0 z-50 shadow-lg transition-transform duration-300 hover:from-gray-100 hover:to-gray-400"
+  >
+    <span class="animate-pulse">⚡</span>
+    <span class="mx-2">GRATIS POR TIEMPO LIMITADO</span>
+    <span class="animate-pulse">⚡</span>
+  </a>
+
+  <!-- Navegación principal con backdrop blur -->
+  <nav
+    class="w-full h-16 flex justify-between items-center px-4 md:px-8 backdrop-blur-md bg-black/30 text-white font-body fixed left-0 z-40 shadow-xl transition-all duration-300 border-b border-white/10"
+    id="main-nav"
+    style="top: 40px;"
+  >
+    <!-- Logo -->
+    <div class="flex justify-center items-center">
+      <img
+        class="animate-fade-in aspect-square w-8 h-8 md:w-10 md:h-10 object-cover"
+        width="1024"
+        height="1024"
+        src="/favicon.svg"
+        alt="Logo ABX Studio"
+      />
+      <a
+        href="/"
+        class="animate-fade-in ml-2 text-gray-300 text-lg md:text-2xl font-bold font-['Nunito_Sans'] hover:text-white transition-colors duration-300"
+      >
+        ABX STUDIO
+      </a>
+    </div>
+
+    <!-- Menú desktop -->
+    <div
+      class="hidden lg:flex justify-center items-center gap-6 text-md font-['Lato']"
+    >
+      <a
+        href="/work"
+        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+      >
+        Escuchar trabajos
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"
+        ></span>
+      </a>
+      <a
+        href="/beats"
+        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+      >
+        Beats
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"
+        ></span>
+      </a>
+      <a
+        href="/services"
+        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+      >
+        Servicios
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"
+        ></span>
+      </a>
+      <a
+        href="/contact"
+        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+      >
+        Contacto
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"
+        ></span>
+      </a>
+      <ButtonCTA />
+    </div>
+
+    <!-- Botón hamburguesa móvil -->
+    <button
+      id="mobile-menu-button"
+      class="lg:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5 focus:outline-none"
+      aria-label="Menú de navegación"
+    >
+      <span
+        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line-1"
+      ></span>
+      <span
+        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line-2"
+      ></span>
+      <span
+        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line-3"
+      ></span>
+    </button>
+  </nav>
+
+  <!-- Menú móvil -->
+  <div
+    id="mobile-menu"
+    class="fixed left-0 w-full backdrop-blur-md bg-black/90 text-white z-30 overflow-hidden transition-all duration-500 ease-in-out"
+    style="max-height: 0; top: 104px;"
+  >
+    <div class="flex flex-col items-center gap-6 py-8 font-['Lato']">
+      <a
+        href="/work"
+        class="text-xl hover:text-cyan-400 transition-colors duration-300 mobile-menu-link"
+      >
+        Escuchar trabajos
+      </a>
+      <a
+        href="/beats"
+        class="text-xl hover:text-cyan-400 transition-colors duration-300 mobile-menu-link"
+      >
+        Beats
+      </a>
+      <a
+        href="/services"
+        class="text-xl hover:text-cyan-400 transition-colors duration-300 mobile-menu-link"
+      >
+        Servicios
+      </a>
+      <a
+        href="/contact"
+        class="text-xl hover:text-cyan-400 transition-colors duration-300 mobile-menu-link"
+      >
+        Contacto
+      </a>
+      <div class="mt-2">
+        <ButtonCTA />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Espaciador para compensar el header fixed -->
+<div class="h-[104px] bg-transparent"></div>
+
+<script>
+  // Funcionalidad del menú móvil
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const menuLines = {
+    line1: document.querySelector(".menu-line-1") as HTMLElement,
+    line2: document.querySelector(".menu-line-2") as HTMLElement,
+    line3: document.querySelector(".menu-line-3") as HTMLElement,
+  };
+
+  let isMenuOpen = false;
+
+  mobileMenuButton?.addEventListener("click", () => {
+    isMenuOpen = !isMenuOpen;
+
+    if (isMenuOpen) {
+      // Abrir menú
+      if (mobileMenu) mobileMenu.style.maxHeight = "400px";
+
+      // Animar hamburguesa a X
+      if (menuLines.line1) {
+        menuLines.line1.style.transform = "rotate(45deg) translateY(8px)";
+      }
+      if (menuLines.line2) {
+        menuLines.line2.style.opacity = "0";
+      }
+      if (menuLines.line3) {
+        menuLines.line3.style.transform = "rotate(-45deg) translateY(-8px)";
+      }
+    } else {
+      // Cerrar menú
+      if (mobileMenu) mobileMenu.style.maxHeight = "0";
+
+      // Restaurar hamburguesa
+      if (menuLines.line1) {
+        menuLines.line1.style.transform = "none";
+      }
+      if (menuLines.line2) {
+        menuLines.line2.style.opacity = "1";
+      }
+      if (menuLines.line3) {
+        menuLines.line3.style.transform = "none";
+      }
+    }
+  });
+
+  // Cerrar menú al hacer clic en un enlace
+  const mobileMenuLinks = document.querySelectorAll(".mobile-menu-link");
+  mobileMenuLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      isMenuOpen = false;
+      if (mobileMenu) mobileMenu.style.maxHeight = "0";
+
+      // Restaurar hamburguesa
+      if (menuLines.line1) menuLines.line1.style.transform = "none";
+      if (menuLines.line2) menuLines.line2.style.opacity = "1";
+      if (menuLines.line3) menuLines.line3.style.transform = "none";
+    });
+  });
+
+  // Ocultar/mostrar banner al hacer scroll
+  let lastScroll = 0;
+  const banner = document.getElementById("promo-banner");
+  const nav = document.getElementById("main-nav");
+  const mobileMenuEl = document.getElementById("mobile-menu");
+
+  window.addEventListener("scroll", () => {
+    const currentScroll = window.scrollY;
+
+    if (currentScroll > 50 && currentScroll > lastScroll) {
+      // Scroll hacia abajo - ocultar banner
+      if (banner) banner.style.transform = "translateY(-100%)";
+      if (nav) nav.style.top = "0";
+      if (mobileMenuEl) mobileMenuEl.style.top = "64px";
+    } else if (currentScroll < 50) {
+      // Cerca del top - mostrar banner
+      if (banner) banner.style.transform = "translateY(0)";
+      if (nav) nav.style.top = "40px";
+      if (mobileMenuEl) mobileMenuEl.style.top = "104px";
+    }
+
+    lastScroll = currentScroll;
+
+    // Cerrar menú móvil si está abierto y se hace scroll
+    if (Math.abs(currentScroll - lastScroll) > 50 && isMenuOpen) {
+      isMenuOpen = false;
+      if (mobileMenu) mobileMenu.style.maxHeight = "0";
+
+      // Restaurar hamburguesa
+      if (menuLines.line1) menuLines.line1.style.transform = "none";
+      if (menuLines.line2) menuLines.line2.style.opacity = "1";
+      if (menuLines.line3) menuLines.line3.style.transform = "none";
+    }
+  });
+</script>
