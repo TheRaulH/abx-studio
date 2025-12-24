@@ -8,6 +8,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   site: "https://TheRaulH.github.io",
-  base: "/",
+  base: "abx-studio",
   outDir: "./dist",
 });
