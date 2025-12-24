@@ -7,7 +7,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  site: "https://TheRaulH.github.io",
-  base: "abx-studio",
+  base: "/",
   outDir: "./dist",
 });
