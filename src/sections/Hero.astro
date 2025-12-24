@@ -17,7 +17,7 @@ const misServicios = [
       h-full w-full
       px-6 sm:px-10 lg:px-16
       pointer-events-none lg:pointer-events-auto
-      bg-gradient-to-t from-black via-black/60 to-transparent lg:bg-none"
+      bg-linear-to-t from-black via-black/60 to-transparent lg:bg-none"
     >
       <div
         class="animate-fade-in-left max-w-2xl pointer-events-auto text-end flex flex-col items-end w-full"
@@ -41,10 +41,9 @@ const misServicios = [
           Especialistas en <br class="sm:hidden" />
           <TypedServices services={misServicios} />
         </div>
-        
 
         <button
-            id="btn-start"
+          id="btn-start"
           type="button"
           class="cursor-pointer text-white font-bold relative text-[14px] w-[9em] h-[3em] mt-6
          bg-linear-to-r from-cyan-500 via-teal-400 to-sky-600 bg-size[length:400%]
@@ -55,7 +54,7 @@ const misServicios = [
          hover:border-b-[6px] border-cyan-700
          
          /* Efectos de Click (Active) */
-         active:border-b-[2px] active:brightness-90 active:translate-y-[2px]
+         active:border-b-2 active:brightness-90 active:translate-y-2
          
          /* Pseudo-elemento para el brillo/glow */
          before:content-[''] before:absolute before:-inset-1.5
