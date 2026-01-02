@@ -1,8 +1,9 @@
 ---
 const { label = "Colaborar", href = "/quote" } = Astro.props;
+const { btnClass = "animate-slide-in-right" } = Astro.props;
 ---
 
-<a href={href} class="abx-btn animate-slide-in-right">
+<a href={href} class={`abx-btn ${btnClass}`}>
   {label}
 </a>
 
