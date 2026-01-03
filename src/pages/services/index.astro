@@ -1,0 +1,118 @@
+---
+import ButtonCTA from "../../components/ButtonCTA.astro";
+import ServiceCard from "../../components/ServiceCard.astro";
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../sections/Footer.astro";
+import Header from "../../sections/Header.astro";
+---
+
+<Layout title="Servicios | ABX Studio">
+  <div class="flex flex-col min-h-screen w-full bg-black ">
+    <div class="flex-none z-50">
+      <Header transition:persist />
+    </div>
+
+    <main class="flex-1 flex flex-col items-center py-12 px-4 md:py-20 ">
+      <div class="text-center mb-16 max-w-3xl">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+          Lleva tu sonido al <span class="text-cyan-400">Siguiente Nivel</span>
+        </h1>
+        <p class="text-gray-400 text-lg">
+          Desde artistas emergentes hasta producciones a medida. Soluciones
+          profesionales de audio.
+        </p>
+      </div>
+
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 max-w-6xl w-full justify-items-center"
+      >
+        <ServiceCard
+          title="First Session FREE"
+          description="Ideal para artistas emergentes que quieren probar la calidad de ABX Studio sin costo inicial."
+          features={[
+            "Mezcla y Masterización GRATIS (1ra vez)",
+            "Mínimo 3 pistas (Beat, Voz, Refuerzos)",
+            "Sesión de 8 horas de trabajo",
+            "2 Revisiones (Inicio y Final)",
+            "Listo para publicar en plataformas",
+            "Siguientes sesiones: $10 USD",
+          ]}
+          ctaText="¡Empezar mi primer tema!"
+          href="/promo"
+        />
+
+        <ServiceCard
+          title="Beat a Medida"
+          description="Creamos el instrumental perfecto que encaje con tu estilo y flujo vocal."
+          features={[
+            "Beat personalizado desde cero",
+            "Género y Subgénero a elección",
+            "Día 1: Groove inicial e instrumentos",
+            "Día 2: Mezcla y Master del beat",
+            "Incluye mezcla de voces al beat",
+            "Entrega en 48 horas",
+          ]}
+          ctaText="Pedir mi Beat - $20 USD"
+          href="https://www.instagram.com/abx_studio"
+        />
+
+        <ServiceCard
+          title="Grabación Pro"
+          description="Asistencia técnica y creativa para que tu interpretación sea perfecta."
+          features={[
+            "Asistencia virtual en grabación",
+            "Guía en afinación y AutoTune",
+            "Procesamiento sobre el beat",
+            "Sesión intensiva de 8 horas",
+            "Entrega de stems con efectos",
+            "Máxima calidad interpretativa",
+          ]}
+          ctaText="Reservar sesión - $10 USD"
+          href="https://www.instagram.com/abx_studio"
+        />
+
+        <ServiceCard
+          title="Mix & Mastering"
+          description="El tratamiento final que tu canción necesita para sonar competitiva en el mercado."
+          features={[
+            "Mezcla completa de stems (2 días)",
+            "Día 2: Ajustes en conjunto con el cliente",
+            "Masterización final de alto impacto",
+            "Referencia comercial aplicada",
+            "Sonido cristalino y potente",
+            "Corrección técnica de frecuencias",
+          ]}
+          ctaText="Finalizar mi tema - $20 USD"
+          href="https://www.instagram.com/abx_studio"
+        />
+      </div>
+
+      <div
+        class="mt-20 text-center bg-cyan-500/5 p-8 rounded-3xl border border-cyan-500/20 max-w-2xl"
+      >
+        <h3 class="text-white text-xl font-semibold mb-2">
+          ¿Tienes dudas sobre los servicios?
+        </h3>
+        <p class="text-gray-400 mb-4 text-sm">
+          Escríbenos directamente para armar un paquete personalizado que se
+          ajuste a tu presupuesto.
+        </p>
+        <ButtonCTA
+          href="/contact"
+          label="Contactar Ahora"
+        />
+      </div>
+    </main>
+
+    <div class="flex-none z-50">
+      <Footer transition:persist />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  /* Aseguramos que el fondo negro sea profundo y el scroll suave */
+  main {
+    background: radial-gradient(circle at top, #00181f 0%, #000000 100%);
+  }
+</style>
