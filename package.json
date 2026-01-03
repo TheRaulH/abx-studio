@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/netlify": "^6.6.3",
     "@midudev/tailwind-animations": "^0.2.0",
     "@splinetool/viewer": "^1.12.28",
     "@tailwindcss/vite": "^4.1.18",
