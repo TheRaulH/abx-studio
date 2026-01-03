@@ -1,3 +1,15 @@
+---
+import Footer from "../sections/Footer.astro";
+import Header from "../sections/Header.astro";
+import { ClientRouter } from "astro:transitions"; // Importante
+const title =
+  Astro.props.title ||
+  "ABX STUDIO | Mezcla, Mastering y Beat Making Profesional";
+const description =
+  Astro.props.description ||
+  "ABX STUDIO es un estudio de producción musical especializado en mezcla, mastering y beat making. Beats gratuitos y servicios de producción accesibles.";
+---
+
 <!doctype html>
 <html lang="es">
   <head>
@@ -7,11 +19,8 @@
     <meta name="generator" content={Astro.generator} />
 
     <!-- SEO principal -->
-    <title>ABX STUDIO | Mezcla, Mastering y Beat Making Profesional</title>
-    <meta
-      name="description"
-      content="ABX STUDIO es un estudio de producción musical especializado en mezcla, mastering y beat making. Beats gratuitos y servicios de producción accesibles."
-    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
     <meta
       name="keywords"
       content="ABX STUDIO, producción musical, mezcla, mastering, beat making, beats gratis, estudio de grabación"
@@ -56,23 +65,31 @@
       href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&family=Lato:wght@400;700&family=Khula:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
+    <ClientRouter />
 
     <link rel="stylesheet" href="/src/layouts/Global.css" />
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
   </head>
-  <body>
+  <body
+    class="[&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:rounded-full
+  [&::-webkit-scrollbar-track]:bg-gray-100
+  [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb]:bg-cyan-400
+  dark:[&::-webkit-scrollbar-track]:bg-black
+  dark:[&::-webkit-scrollbar-thumb]:bg-cyan-600"
+  >
     <slot />
-  </body>
-  <script type="application/ld+json">
+  </body><script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "MusicRecordingStudio",
       "name": "ABX STUDIO",
       "description": "Estudio de producción musical especializado en mezcla, mastering y beat making.",
-      "url": "https://tudominio.com",
+      "url": "https://abxstudio.es",
       "sameAs": [
-        "https://instagram.com/tuusuario",
-        "https://soundcloud.com/tuusuario"
+        "https://instagram.com/abx_studio",
+        "https://soundcloud.com/abx_studio"
       ]
     }
   </script>
