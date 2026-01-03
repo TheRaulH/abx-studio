@@ -1,0 +1,546 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SoundCloudCard from "../../components/SoundCloudCard.astro";
+import Header from "../../sections/Header.astro";
+import Footer from "../../sections/Footer.astro";
+
+// Catálogo de Beats
+const beats = [
+  {
+    id: "1",
+    titulo: "Cyberpunk Night",
+    trackId: "2237012117",
+    genero: "Trap",
+    mood: "Oscuro",
+    bpm: "140",
+    key: "Am",
+    tags: ["Hard", "Cyber", "Bass"],
+  },
+  {
+    id: "2",
+    titulo: "Smooth Soul",
+    trackId: "123456789",
+    genero: "R&B",
+    mood: "Relajado",
+    bpm: "95",
+    key: "Cm",
+    tags: ["Voz", "Chill", "Vintage"],
+  },
+  
+];
+
+// Generar géneros únicos automáticamente
+const generosUnicos = [...new Set(beats.map((beat) => beat.genero))];
+
+// Generar moods únicos automáticamente
+const moodsUnicos = [...new Set(beats.map((beat) => beat.mood))];
+---
+
+<Layout title="Beat Store | ABX Studio">
+  <div
+    class="flex flex-col min-h-screen w-full bg-black relative overflow-hidden"
+  >
+    <!-- Efectos de fondo -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+      <div
+        class="absolute top-0 left-1/4 w-96 h-96 bg-[#00d3f2] rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-pulse"
+      >
+      </div>
+      <div
+        class="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-pulse"
+        style="animation-delay: 2s;"
+      >
+      </div>
+    </div>
+
+    <div class="flex-none z-50 relative">
+      <Header transition:persist />
+    </div>
+
+    <main
+      class="flex-1 flex flex-col items-center py-12 px-4 md:py-20 relative z-10"
+    >
+      <div class="max-w-7xl w-full mx-auto">
+        <!-- Hero Section -->
+        <div class="text-center mb-12 max-w-3xl mx-auto">
+          <div class="inline-block mb-4">
+            <span
+              class="px-4 py-2 bg-[#00d3f2]/10 border border-[#00d3f2]/30 rounded-full text-[#00d3f2] text-sm font-semibold tracking-wide"
+            >
+              CATÁLOGO EXCLUSIVO
+            </span>
+          </div>
+          <h1
+            class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight"
+          >
+            Beat <span class="text-[#00d3f2]">Library</span>
+          </h1>
+          <p class="text-gray-400 text-lg md:text-xl leading-relaxed">
+            Explora nuestra colección de beats premium. Filtra por género, mood
+            o BPM para encontrar el sonido perfecto.
+          </p>
+        </div>
+
+        <!-- Stats -->
+        <div
+          class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto"
+        >
+          <div
+            class="bg-linear-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-xl rounded-2xl p-6 border border-white/5 text-center"
+          >
+            <div class="text-3xl font-bold text-[#00d3f2]" id="totalBeats">
+              {beats.length}
+            </div>
+            <div class="text-sm text-gray-500 mt-1">Total Beats</div>
+          </div>
+          <div
+            class="bg-linear-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-xl rounded-2xl p-6 border border-white/5 text-center"
+          >
+            <div class="text-3xl font-bold text-[#00d3f2]">
+              {generosUnicos.length}
+            </div>
+            <div class="text-sm text-gray-500 mt-1">Géneros</div>
+          </div>
+          <div
+            class="bg-linear-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-xl rounded-2xl p-6 border border-white/5 text-center"
+          >
+            <div class="text-3xl font-bold text-[#00d3f2]" id="visibleBeats">
+              {beats.length}
+            </div>
+            <div class="text-sm text-gray-500 mt-1">Mostrando</div>
+          </div>
+          <div
+            class="bg-linear-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-xl rounded-2xl p-6 border border-white/5 text-center"
+          >
+            <div class="text-3xl font-bold text-[#00d3f2]">NEW</div>
+            <div class="text-sm text-gray-500 mt-1">Actualizando</div>
+          </div>
+        </div>
+
+        <!-- Panel de Filtros Mejorado -->
+        <div
+          class="bg-linear-to-br from-neutral-900/80 to-neutral-900/40 backdrop-blur-xl rounded-3xl border border-[#00d3f2]/20 mb-12 overflow-hidden shadow-2xl sticky top-20 z-30"
+        >
+          <!-- Barra de búsqueda principal -->
+          <div class="p-6 border-b border-white/5">
+            <div class="relative group">
+              <div
+                class="absolute inset-y-0 left-4 flex items-center pointer-events-none"
+              >
+                <svg
+                  class="w-5 h-5 text-gray-500 group-focus-within:text-[#00d3f2] transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="beatSearch"
+                placeholder="Buscar por nombre, género, mood o tags..."
+                class="w-full bg-black/60 border-2 border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#00d3f2] focus:ring-2 focus:ring-[#00d3f2]/20 transition-all"
+              />
+              <button
+                id="clearSearch"
+                class="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-white transition-colors hidden"
+                aria-label="Limpiar búsqueda"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtros por Género -->
+          <div class="p-6 border-b border-white/5">
+            <div class="flex items-center justify-between mb-4">
+              <h3
+                class="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                  <path
+                    fill-rule="evenodd"
+                    d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                    clip-rule="evenodd"></path>
+                </svg>
+                Género
+              </h3>
+              <span id="generoCount" class="text-xs text-[#00d3f2] font-medium"
+                >{generosUnicos.length} opciones</span
+              >
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button
+                class="filter-btn genero-filter active group relative px-5 py-2.5 rounded-xl border-2 border-[#00d3f2] bg-[#00d3f2] text-black text-sm font-semibold hover:bg-[#00d3f2]/90 transition-all shadow-lg shadow-[#00d3f2]/20"
+                data-filter="all"
+                data-type="genero"
+              >
+                <span class="relative z-10">Todos</span>
+              </button>
+              {
+                generosUnicos.map((genero) => (
+                  <button
+                    class="filter-btn genero-filter group relative px-5 py-2.5 rounded-xl border-2 border-white/10 bg-white/5 text-gray-300 text-sm font-medium hover:border-[#00d3f2]/50 hover:bg-[#00d3f2]/10 hover:text-white transition-all"
+                    data-filter={genero}
+                    data-type="genero"
+                  >
+                    <span class="relative z-10">{genero}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Filtros por Mood -->
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3
+                class="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z"
+                    clip-rule="evenodd"></path>
+                </svg>
+                Mood
+              </h3>
+              <span id="moodCount" class="text-xs text-[#00d3f2] font-medium"
+                >{moodsUnicos.length} opciones</span
+              >
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button
+                class="filter-btn mood-filter active group relative px-5 py-2.5 rounded-xl border-2 border-[#00d3f2] bg-[#00d3f2] text-black text-sm font-semibold hover:bg-[#00d3f2]/90 transition-all shadow-lg shadow-[#00d3f2]/20"
+                data-filter="all"
+                data-type="mood"
+              >
+                <span class="relative z-10">Todos</span>
+              </button>
+              {
+                moodsUnicos.map((mood) => (
+                  <button
+                    class="filter-btn mood-filter group relative px-5 py-2.5 rounded-xl border-2 border-white/10 bg-white/5 text-gray-300 text-sm font-medium hover:border-[#00d3f2]/50 hover:bg-[#00d3f2]/10 hover:text-white transition-all"
+                    data-filter={mood}
+                    data-type="mood"
+                  >
+                    <span class="relative z-10">{mood}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Botón Reset -->
+          <div class="px-6 pb-6">
+            <button
+              id="resetFilters"
+              class="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-gray-400 text-sm font-medium hover:bg-white/10 hover:text-white hover:border-white/20 transition-all flex items-center justify-center gap-2 group"
+            >
+              <svg
+                class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                ></path>
+              </svg>
+              Resetear Filtros
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid de Beats -->
+        <div
+          id="beatsGrid"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8"
+        >
+          {
+            beats.map((beat) => (
+              <div
+                class="beat-item transition-all duration-500 opacity-0 animate-fadeIn"
+                data-genero={beat.genero}
+                data-mood={beat.mood}
+                data-titulo={beat.titulo.toLowerCase()}
+                data-tags={beat.tags.join(" ").toLowerCase()}
+                data-bpm={beat.bpm}
+                data-key={beat.key}
+                style={`animation-delay: ${parseInt(beat.id) * 100}ms`}
+              >
+                <SoundCloudCard
+                  trackId={beat.trackId}
+                  artista={`${beat.genero}  • ${beat.mood} • ${beat.key} • ${beat.bpm} BPM`}
+                  cancion={beat.titulo}
+                  tags={beat.tags}
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="hidden text-center py-32">
+          <div
+            class="inline-block p-8 bg-neutral-900/40 rounded-full mb-6 border border-white/5"
+          >
+            <svg
+              class="w-20 h-20 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-white mb-3">
+            No encontramos resultados
+          </h3>
+          <p class="text-gray-500 text-lg font-light mb-6">
+            Intenta ajustar tus filtros o búsqueda
+          </p>
+          <button
+            id="resetFromNoResults"
+            class="px-6 py-3 bg-[#00d3f2] text-black rounded-xl font-semibold hover:bg-[#00d3f2]/90 transition-all inline-flex items-center gap-2"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            Resetear Filtros
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <div class="flex-none z-50 relative">
+      <Footer transition:persist />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  main {
+    background: radial-gradient(
+      ellipse at top,
+      #001a1f 0%,
+      #000000 50%,
+      #000000 100%
+    );
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .filter-btn.active {
+    background-color: #00d3f2;
+    color: black;
+    border-color: #00d3f2;
+    font-weight: 700;
+    box-shadow: 0 10px 20px -5px rgba(0, 211, 242, 0.3);
+    transform: scale(1.02);
+  }
+
+  .beat-item {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .beat-item.hiding {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+</style>
+
+<script>
+  function setupFilters() {
+    const searchInput = document.getElementById(
+      "beatSearch"
+    ) as HTMLInputElement | null;
+    const clearSearchBtn = document.getElementById("clearSearch");
+    const filterBtns = document.querySelectorAll(".filter-btn");
+    const generoFilters = document.querySelectorAll(".genero-filter");
+    const moodFilters = document.querySelectorAll(".mood-filter");
+    const beatItems = document.querySelectorAll(".beat-item");
+    const noResults = document.getElementById("noResults");
+    const resetBtn = document.getElementById("resetFilters");
+    const resetFromNoResults = document.getElementById("resetFromNoResults");
+    const visibleBeatsEl = document.getElementById("visibleBeats");
+
+    let activeGenero = "all";
+    let activeMood = "all";
+
+    function updateVisibleCount(count: number) {
+      if (visibleBeatsEl) {
+        visibleBeatsEl.textContent = count.toString();
+      }
+    }
+
+    function filterBeats() {
+      const searchTerm = searchInput?.value.toLowerCase() || "";
+
+      // Mostrar/ocultar botón de limpiar búsqueda
+      if (clearSearchBtn) {
+        clearSearchBtn.classList.toggle("hidden", searchTerm === "");
+      }
+
+      let visibleCount = 0;
+
+      beatItems.forEach((item, index) => {
+        const htmlItem = item as HTMLElement;
+        const title = item.getAttribute("data-titulo") || "";
+        const genero = item.getAttribute("data-genero") || "";
+        const mood = item.getAttribute("data-mood") || "";
+        const tags = item.getAttribute("data-tags")?.toLowerCase() || "";
+        const bpm = item.getAttribute("data-bpm") || "";
+
+        const matchesSearch =
+          title.includes(searchTerm) ||
+          tags.includes(searchTerm) ||
+          genero.toLowerCase().includes(searchTerm) ||
+          mood.toLowerCase().includes(searchTerm) ||
+          bpm.includes(searchTerm);
+
+        const matchesGenero = activeGenero === "all" || genero === activeGenero;
+        const matchesMood = activeMood === "all" || mood === activeMood;
+
+        if (matchesSearch && matchesGenero && matchesMood) {
+          htmlItem.classList.remove("hiding");
+          htmlItem.style.display = "block";
+          setTimeout(() => {
+            htmlItem.style.opacity = "1";
+          }, index * 50);
+          visibleCount++;
+        } else {
+          htmlItem.classList.add("hiding");
+          setTimeout(() => {
+            htmlItem.style.display = "none";
+          }, 300);
+        }
+      });
+
+      updateVisibleCount(visibleCount);
+
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? "block" : "none";
+      }
+    }
+
+    // Búsqueda en tiempo real
+    searchInput?.addEventListener("input", filterBeats);
+
+    // Limpiar búsqueda
+    clearSearchBtn?.addEventListener("click", () => {
+      if (searchInput) {
+        searchInput.value = "";
+        filterBeats();
+      }
+    });
+
+    // Filtros de género
+    generoFilters.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        generoFilters.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeGenero = btn.getAttribute("data-filter") || "all";
+        filterBeats();
+      });
+    });
+
+    // Filtros de mood
+    moodFilters.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        moodFilters.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeMood = btn.getAttribute("data-filter") || "all";
+        filterBeats();
+      });
+    });
+
+    // Reset filters
+    function resetAllFilters() {
+      // Reset búsqueda
+      if (searchInput) searchInput.value = "";
+
+      // Reset filtros de género
+      activeGenero = "all";
+      generoFilters.forEach((btn) => {
+        if (btn.getAttribute("data-filter") === "all") {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      // Reset filtros de mood
+      activeMood = "all";
+      moodFilters.forEach((btn) => {
+        if (btn.getAttribute("data-filter") === "all") {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      filterBeats();
+    }
+
+    resetBtn?.addEventListener("click", resetAllFilters);
+    resetFromNoResults?.addEventListener("click", resetAllFilters);
+
+    // Animación inicial
+    setTimeout(() => {
+      beatItems.forEach((item) => {
+        (item as HTMLElement).style.opacity = "1";
+      });
+    }, 100);
+  }
+
+  // Se ejecuta al cargar y al navegar con View Transitions de Astro
+  document.addEventListener("astro:page-load", setupFilters);
+</script>
