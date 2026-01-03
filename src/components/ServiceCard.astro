@@ -1,0 +1,218 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  features: string[];
+  ctaText: string;
+  href: string;
+}
+
+const { title, description, features, ctaText, href } = Astro.props;
+---
+
+<div class="card">
+  <div class="card__border"></div>
+
+  <div class="card_title__container">
+    <span class="card_title">{title}</span>
+    <p class="card_paragraph">{description}</p>
+  </div>
+
+  <hr class="line" />
+
+  <ul class="card__list">
+    {
+      features.map((feature) => (
+        <li class="card__list_item">
+          <span class="check">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              class="check_svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z"
+              />
+            </svg>
+          </span>
+          <span class="list_text">{feature}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <a href={href} class="button">{ctaText}</a>
+</div>
+
+<style>
+  .card {
+    --white: hsl(0, 0%, 100%);
+    --black: hsl(222, 47%, 5%);
+    --paragraph: hsl(215, 20%, 75%);
+    --line: hsl(215, 20%, 18%);
+    --primary: #00d3f2;
+    --primary-strong: #00b7d4;
+    --primary-glow: rgba(0, 211, 242, 0.6);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem; /* Aumenté un poco el padding para mejor visualización */
+    width: 19rem;
+    background-color: var(--black);
+    background-image:
+      radial-gradient(at 88% 40%, var(--black) 0px, transparent 85%),
+      radial-gradient(at 49% 30%, var(--black) 0px, transparent 85%),
+      radial-gradient(at 14% 26%, var(--black) 0px, transparent 85%),
+      radial-gradient(at 0% 64%, rgba(0, 211, 242, 0.35) 0px, transparent 85%),
+      radial-gradient(at 41% 94%, rgba(0, 211, 242, 0.25) 0px, transparent 85%),
+      radial-gradient(at 100% 99%, rgba(0, 183, 212, 0.4) 0px, transparent 85%);
+
+    border-radius: 1rem;
+    box-shadow:
+      0px -16px 24px 0px rgba(255, 255, 255, 0.15) inset,
+      0 0 40px rgba(0, 211, 242, 0.12);
+
+    /* Asegura que el borde no tape el contenido */
+    z-index: 1;
+  }
+
+  .card__border {
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    z-index: -1; /* Detrás del contenido de la card */
+    inset: -1px; /* Crea el grosor del borde */
+    background-color: #222; /* Color base del borde cuando no pasa la luz */
+    border-radius: inherit;
+  }
+
+  .card__border::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    /* Centramos el eje de rotación */
+    top: 50%;
+    left: 50%;
+    /* El ancho debe ser mayor que la card para que al rotar cubra las esquinas */
+    width: 300%;
+    height: 8rem;
+    background-image: linear-gradient(
+      0deg,
+      transparent 0%,
+      var(--primary) 50%,
+      transparent 100%
+    );
+    animation: rotate 6s linear infinite;
+    /* Ajuste de origen para que rote sobre su centro desplazado */
+    transform-origin: center;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  /* Capa interna para que el fondo de la card oculte el centro del brillo */
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 1px; /* Grosor del borde */
+    background: inherit; /* Copia el fondo y los radial gradients de la card */
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .card_title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--white);
+  }
+
+  .card_paragraph {
+    margin-top: 0.25rem;
+    width: 80%;
+    font-size: 0.65rem;
+    color: var(--paragraph);
+  }
+
+  .line {
+    width: 100%;
+    height: 1px;
+    background-color: var(--line);
+    border: none;
+    position: relative;
+    z-index: 2;
+  }
+
+  .card__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .card__list_item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .check {
+    width: 1.1rem;
+    height: 1.1rem;
+    background-color: var(--primary);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .check_svg {
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: var(--black);
+  }
+
+  .list_text {
+    font-size: 0.8rem;
+    color: var(--white);
+  }
+
+  .button {
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: auto;
+    padding: 0.7rem;
+    width: 100%;
+    background-image: linear-gradient(
+      0deg,
+      var(--primary-strong) 0%,
+      var(--primary) 100%
+    );
+    font-size: 0.8rem;
+    color: var(--black);
+    border: 0;
+    border-radius: 9999px;
+    box-shadow: inset 0 -2px 15px rgba(255, 255, 255, 0.4);
+    transition: transform 0.25s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .button:hover {
+    transform: scale(1.02);
+  }
+</style>
