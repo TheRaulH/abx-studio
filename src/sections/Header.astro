@@ -1,5 +1,7 @@
 ---
 import ButtonCTA from "../components/ButtonCTA.astro";
+const { pathname } = Astro.url;
+const isHome = pathname === "/" || pathname === "";
 ---
 
 <div class="h-min">
@@ -7,7 +9,10 @@ import ButtonCTA from "../components/ButtonCTA.astro";
   <a
     href="/promo"
     id="promo-banner"
-    class="animate-fade-in-down w-full h-10 bg-linear-to-r from-white to-gray-300 text-black flex items-center justify-center text-sm md:text-base font-semibold fixed top-0 left-0 z-50 shadow-lg transition-transform duration-300 hover:from-gray-100 hover:to-gray-400"
+    class={`
+      w-full h-10 bg-linear-to-r from-white to-gray-300 text-black flex items-center justify-center text-sm md:text-base font-semibold fixed top-0 left-0 z-50 shadow-lg transition-transform duration-300 hover:from-gray-100 hover:to-gray-400
+      ${isHome ? "animate-fade-in-down" : ""} 
+    `}
   >
     <span class="animate-pulse">⚡</span>
     <span class="mx-2">GRATIS POR TIEMPO LIMITADO</span>
@@ -23,7 +28,9 @@ import ButtonCTA from "../components/ButtonCTA.astro";
     <!-- Logo -->
     <div class="flex justify-center items-center">
       <img
-        class="animate-fade-in aspect-square w-8 h-8 md:w-10 md:h-10 object-cover"
+        class={`aspect-square w-8 h-8 md:w-10 md:h-10 object-cover ${
+          isHome ? "animate-fade-in" : ""
+        }`}
         width="1024"
         height="1024"
         src="/favicon.svg"
@@ -31,7 +38,9 @@ import ButtonCTA from "../components/ButtonCTA.astro";
       />
       <a
         href="/"
-        class="animate-fade-in ml-2 text-gray-300 text-lg md:text-2xl font-bold font-['Nunito_Sans'] hover:text-white transition-colors duration-300"
+        class={` ml-2 text-gray-300 text-lg md:text-2xl font-bold font-['Nunito_Sans'] hover:text-white transition-colors duration-300 ${
+          isHome ? "animate-fade-in" : ""
+        }`}
       >
         ABX STUDIO
       </a>
@@ -43,7 +52,7 @@ import ButtonCTA from "../components/ButtonCTA.astro";
     >
       <a
         href="/work"
-        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+        class={`hover:text-cyan-400 transition-colors duration-300 relative group ${isHome ? "animate-slide-in-left" : ""}`}
       >
         Escuchar trabajos
         <span
@@ -52,7 +61,7 @@ import ButtonCTA from "../components/ButtonCTA.astro";
       </a>
       <a
         href="/beats"
-        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+        class={`hover:text-cyan-400 transition-colors duration-300 relative group ${isHome ? "animate-slide-in-left" : ""}`}
       >
         Beats
         <span
@@ -61,7 +70,7 @@ import ButtonCTA from "../components/ButtonCTA.astro";
       </a>
       <a
         href="/services"
-        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+        class={`hover:text-cyan-400 transition-colors duration-300 relative group ${isHome ? "animate-slide-in-left" : ""}`}
       >
         Servicios
         <span
@@ -70,14 +79,17 @@ import ButtonCTA from "../components/ButtonCTA.astro";
       </a>
       <a
         href="/contact"
-        class="animate-slide-in-left hover:text-cyan-400 transition-colors duration-300 relative group"
+        class={`hover:text-cyan-400 transition-colors duration-300 relative group ${isHome ? "animate-slide-in-left" : ""}`}
       >
         Contacto
         <span
           class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"
         ></span>
       </a>
-      <ButtonCTA />
+      <ButtonCTA
+        btnClass={isHome ? "animate-slide-in-right" : ""}
+        href="/promo"
+      />
     </div>
 
     <!-- Botón hamburguesa móvil -->
@@ -130,7 +142,7 @@ import ButtonCTA from "../components/ButtonCTA.astro";
         Contacto
       </a>
       <div class="mt-2">
-        <ButtonCTA />
+        <ButtonCTA href="/contact" />
       </div>
     </div>
   </div>
