@@ -1,0 +1,37 @@
+---
+// src/components/SoundCloudCard.astro
+const { trackId, artista, cancion, color = "00d3f2" } = Astro.props;
+
+// Construimos la URL del iframe
+const embedUrl = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${trackId}&color=%23${color}&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
+---
+
+<div
+  class="soundcloud-card group bg-neutral-900/40 p-4 rounded-xl border border-white/5 hover:border-cyan-400/30 transition-all duration-300"
+>
+  <div class="flex flex-col gap-3">
+    <iframe
+      width="100%"
+      height="166"
+      scrolling="no"
+      frameborder="no"
+      allow="autoplay"
+      src={embedUrl}
+    >
+    </iframe>
+
+    <div class="px-2 flex justify-between items-center">
+      <span class="text-xs font-mono text-cyan-400/70 capitalize">{artista}</span
+      >
+      <div class="flex gap-2">
+        {
+          Astro.props.tags?.map((tag: unknown) => (
+            <span class="text-[10px] bg-white/5 text-gray-400 px-2 py-1 rounded">
+              {tag}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
