@@ -1,0 +1,322 @@
+---
+import { sequence } from "astro:middleware";
+import ButtonCTA from "../../components/ButtonCTA.astro";
+import TrackCard from "../../components/TrackCard.astro";
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../sections/Footer.astro";
+import Header from "../../sections/Header.astro";
+import SoundCloudCard from "../../components/SoundCloudCard.astro";
+
+const resultados = [
+  {
+  artista: "Zeto ft. ByHer",
+  cancion: "OLVIDALO",
+  // Extraído del parámetro tracks%3A2240252717
+  trackId: "2240252717", 
+  color: "00d3f2", 
+  tags: ["Reggaeton", "Latino", "Afrobeat", "Latin Pop", "Pop Rap"],
+},
+  {
+  artista: "Lil Jhetly",
+  cancion: "READY CRAZY",
+  // Extraído del parámetro tracks%3A2240251940
+  trackId: "2240251940", 
+  color: "00d3f2", 
+  tags: ["Trap", "Hip hop rap", "Latino"],
+}
+
+];
+---
+
+<Layout title="Resultados Free Session | ABX Studio">
+  <div class="flex flex-col min-h-screen w-full bg-black relative overflow-hidden">
+    <!-- Efectos de fondo animados -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+      <div class="absolute top-20 left-10 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl animate-pulse-slow"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+    </div>
+
+    <div class="flex-none z-50 relative">
+      <Header transition:persist />
+    </div>
+
+    <main class="flex-1 flex flex-col items-center py-12 px-4 md:py-20 overflow-y-auto relative z-10">
+      <!-- Hero Section -->
+      <div class="text-center mb-20 max-w-4xl fade-in-up">
+        <span class="inline-block px-5 py-2 mb-6 text-xs font-bold tracking-widest text-black uppercase bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/30 hover:scale-105 transition-transform duration-300">
+          Promoción Temporal
+        </span>
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+          Nuestras <span class="text-cyan-400 inline-block hover:scale-105 transition-transform duration-300">Free Sessions</span>
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          Mira cómo estamos transformando el sonido de los artistas emergentes. Calidad de estudio, costo cero.
+        </p>
+      </div>
+
+      <!-- Proceso Section -->
+      <section class="max-w-5xl w-full mb-32 fade-in-up" style="animation-delay: 0.2s;">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+            El Proceso en <span class="text-cyan-400">8 Horas</span>
+          </h2>
+          <p class="text-gray-500 text-sm">De la grabación a Spotify en tiempo récord</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {
+            [
+              {
+                step: "01",
+                title: "Recepción",
+                desc: "Analizamos tus 3 pistas base (Beat, Voz, Refuerzos).",
+                icon: "📥"
+              },
+              {
+                step: "02",
+                title: "Edición",
+                desc: "Limpieza de ruidos y ajuste de tiempos.",
+                icon: "✂️"
+              },
+              {
+                step: "03",
+                title: "Mezcla Pro",
+                desc: "Ecualización, compresión y efectos espaciales.",
+                icon: "🎛️"
+              },
+              {
+                step: "04",
+                title: "Mastering",
+                desc: "Maximizamos el volumen para plataformas digitales.",
+                icon: "🎚️"
+              },
+            ].map((item, index) => (
+              <div 
+                class="process-card group relative p-6 bg-linear-to-br from-neutral-900/50 to-neutral-900/30 border border-cyan-400/10 rounded-xl hover:border-cyan-400/40 transition-all duration-500 overflow-hidden"
+                style={`animation-delay: ${index * 0.1}s;`}
+              >
+                <div class="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-cyan-400/0 via-cyan-400 to-cyan-400/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                
+                <div class="relative z-10">
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="text-5xl opacity-50 group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
+                    <span class="text-cyan-400 font-mono text-sm font-bold bg-cyan-400/10 px-3 py-1 rounded-full">{item.step}</span>
+                  </div>
+                  <h3 class="text-white font-bold text-xl mb-3 group-hover:text-cyan-400 transition-colors duration-300">{item.title}</h3>
+                  <p class="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+
+                <!-- Efecto de brillo -->
+                <div class="absolute inset-0 bg-linear-to-r from-transparent via-cyan-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- Trabajos Recientes Section -->
+      <section class="max-w-6xl w-full mb-20">
+  <div class="mb-12">
+    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Trabajos Recientes</h2>
+    <p class="text-cyan-400 text-sm font-mono">// Escucha la diferencia directamente</p>
+  </div>
+    
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    {resultados.map((track) => (
+      <SoundCloudCard {...track} />
+    ))}
+  </div>
+</section>
+
+      <!-- CTA Final -->
+      <div class="mt-10 mb-20 fade-in-up" style="animation-delay: 0.6s;">
+        <ButtonCTA href="/contact" label="¡Quiero mi Free Session!" />
+      </div>
+    </main>
+
+    <div class="flex-none z-50 relative">
+      <Footer transition:persist />
+    </div>
+  </div>
+   
+
+ 
+ 
+</Layout>
+
+<style>
+  main {
+    background: radial-gradient(ellipse at top, #001a1f 0%, #000000 50%, #000000 100%);
+  }
+
+  /* Animaciones */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulseSlow {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.1);
+    }
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-pulse-slow {
+    animation: pulseSlow 8s ease-in-out infinite;
+  }
+
+  .process-card {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .track-card {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+   
+</style>
+
+<script>
+  // Intersection Observer para animaciones al scroll
+  document.addEventListener('astro:page-load', () => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).style.opacity = '1';
+          (entry.target as HTMLElement).style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    const animatedElements = document.querySelectorAll('.fade-in-up, .process-card, .track-card');
+    animatedElements.forEach(el => observer.observe(el));
+  });
+
+  // Efecto parallax suave en el mouse
+  document.addEventListener('mousemove', (e) => {
+    const cards = document.querySelectorAll('.process-card, .track-card');
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = (y - centerY) / 20;
+      const rotateY = (centerX - x) / 20;
+      
+      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        (card as HTMLElement).style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      } else {
+        (card as HTMLElement).style.transform = '';
+      }
+    });
+  });
+</script>
+
+<iframe
+  id="sc-player"
+  style="display:none"
+  allow="autoplay; encrypted-media" 
+  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1">
+</iframe>
+
+<script is:inline src="https://w.soundcloud.com/player/api.js"></script>
+
+<script>
+
+  declare global {
+    interface Window {
+      SC: any;
+    }
+  }
+  const initWidget = () => {
+    const iframe = document.getElementById('sc-player');
+    
+    if (typeof (window as any).SC !== 'undefined') {
+      const widget = (window as any).SC.Widget(iframe);
+      const cards = document.querySelectorAll('.track-card');
+      let currentUrl = "";
+
+      cards.forEach(card => {
+        const btn = card.querySelector('.play-trigger');
+        const url = card.getAttribute('data-soundcloud');
+
+        btn?.addEventListener('click', () => {
+          // CASO 1: Si la canción ya es la que está sonando, pausamos/reanudamos
+          if (currentUrl === url) {
+            widget.toggle();
+            return;
+          }
+
+          // CASO 2: Es una canción nueva
+          // Limpiamos estados de todas las tarjetas
+          cards.forEach(c => {
+            c.classList.remove('is-playing', 'is-loading');
+          });
+
+          card.classList.add('is-loading');
+          currentUrl = url || "";
+
+          widget.load(url, {
+            auto_play: true,
+            callback: () => {
+              card.classList.remove('is-loading');
+              card.classList.add('is-playing');
+            }
+          });
+        });
+      });
+
+      // Escuchar eventos del widget de SoundCloud para actualizar los iconos visualmente
+      widget.bind((window as any).SC.Widget.Events.PAUSE, () => {
+        document.querySelector('.is-playing')?.classList.remove('is-playing');
+      });
+
+      widget.bind((window as any).SC.Widget.Events.PLAY, () => {
+        // Buscamos la tarjeta que coincida con la URL actual y le ponemos el estado playing
+        widget.getCurrentSound((sound: any) => {
+           cards.forEach(c => {
+             if(c.getAttribute('data-soundcloud') === sound.permalink_url) {
+                c.classList.add('is-playing');
+             }
+           });
+        });
+      });
+
+    } else {
+      setTimeout(initWidget, 500);
+    }
+  };
+
+  document.addEventListener('astro:page-load', initWidget);
+</script>
