@@ -1,0 +1,703 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../sections/Header.astro";
+import Footer from "../../sections/Footer.astro"; 
+
+// 1. CONFIGURACIÓN MANUAL (Tus metadatos personalizados)
+const configTrabajos: Record<string, { genero: string; rol: string; destacado: boolean; color: string; tags: string[]; colaboradores: string[]; descripcion: string }> = {
+  "AwOX6IzGhcg": {
+    genero: "Trap",
+    rol: "Producción & Mezcla",
+    destacado: false,
+    color: "#4f46e5", // Un tono índigo que refleja el estilo melódico/trap
+    tags: ["Trap", "Pop Rap", "Rap", "Latin Hip-Hop"],
+    colaboradores: ["Jhetly"],
+    descripcion: "Producción del track 'ME CANSE'. Un tema que navega entre el Trap y el Pop Rap, con un enfoque lírico sobre la superación y el enfoque en las metas personales."
+  },
+  "XTYprsWEj2o": {
+    genero: "Reggaeton",
+    rol: "Producción & Mezcla",
+    destacado: false,
+    color: "#fbbf24", // Un color amarillo cálido/tropical por el toque Afro
+    tags: ["Reggaeton", "Afrobeats", "Latin Pop", "Afro-fusion"],
+    colaboradores: ["Zeto", "ByHer"],
+    descripcion: "Producción de 'OLVIDALO'. Un track con una fuerte base de Reggaeton (75%) mezclada con texturas de Afrobeats y Afro-fusion, logrando un sonido refrescante y comercial."
+  },
+  "_8tGDjrQjIA": {
+    genero: "Latin Hip-Hop",
+    rol: "Remix & Producción",
+    destacado: false,
+    color: "#8b5cf6", // Un color violeta vibrante
+    tags: ["Remix", "Latin Hip-Hop", "Trap", "Pop Rap", "Reggaeton"],
+    colaboradores: ["Chinopla", "Yeiking", "Calechosky", "San Diego"],
+    descripcion: "Remix oficial del tema 'ELLA Y YO'. Una colaboración masiva que combina Latin Hip-Hop, Trap y matices de Pop Rap, logrando un sonido urbano versátil y bailable."
+  },
+  "MMQsIawFCPc": {
+    genero: "Reggaeton",
+    rol: "Producción & Mezcla",
+    destacado: false,
+    color: "#10b981", // Un color verde esmeralda para diferenciarlo
+    tags: ["Reggaeton", "Latin Pop", "Trap", "Moombahton"],
+    colaboradores: ["Zeto", "Yeiking"],
+    descripcion: "Producción de 'TU INTENCIÓN'. Un track con esencia de Reggaeton y Latin Pop , fusionado con elementos de Trap y ritmos bailables como el Moombahton."
+  },
+  "HCxPiF-2gsw": {
+    genero: "Trap",
+    rol: "Producción & Mezcla",
+    destacado: false,
+    color: "#f59e0b", // Un color naranja/ámbar que vibra con el estilo energético
+    tags: ["Trap", "Rap", "Cloud Rap", "Urban"],
+    colaboradores: ["Lil Jhetly"],
+    descripcion: "Producción musical para 'READY CRAZY' de Lil Jhetly. Un track con fuerte base de Trap y Rap, con matices de Cloud Rap y una atmósfera energética."
+  },
+  "GRVkK97sJYY": {
+    genero: "Latin Hip-Hop",
+    rol: "Producción & Mezcla", // Basado en el patrón del canal
+    destacado: false,
+    color: "#e11d48", // Un color rojo/malianteo sugerido
+    tags: ["Latin Hip-Hop", "Trap", "Malianteo", "Street"],
+    colaboradores: ["Tommy", "ByHer"],
+    descripcion: "Producción del track 'LEALTAD'. Un tema de corte Malianteo y Hip-Hop latino que explora vivencias de calle y la importancia de la lealtad."
+  },
+  "6iwshhY9OU8": {
+    genero: "Latin Hip-Hop",
+    rol: "Producción & Mezcla",
+    destacado: true,
+    color: "#00d3f2",
+    tags: ["Latin Hip-Hop", "Trap", "Rap", "Urban"],
+    colaboradores: ["Yeiking", "Calechosky"],
+    descripcion: "Producción musical y técnica para 'COMPADRES'. Un track que fusiona Hip-Hop latino con matices de Trap y Dancehall. Grabado y producido por Raul Herrera."
+  }
+};
+
+// 2. LÓGICA DE OBTENCIÓN DE DATOS (YouTube API)
+const YOUTUBE_API_KEY = import.meta.env.YOUTUBE_API_KEY;
+const videoIds = Object.keys(configTrabajos).join(',');
+const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds}&key=${YOUTUBE_API_KEY}`;
+
+let trabajos = [];
+
+try {
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+
+  // Función para formatear números grandes (ej: 1200000 -> 1.2M)
+  const formatNumber = (num: string | number | bigint) => {
+    return Intl.NumberFormat('en-US', {
+      notation: "compact",
+      maximumFractionDigits: 1
+    }).format(Number(num));
+  };
+
+  trabajos = data.items.map((video: { id: string | number; snippet: { title: any; channelTitle: any; thumbnails: { maxresdefault: { url: any; }; high: { url: any; }; }; publishedAt: string; }; statistics: { viewCount: any; likeCount: any; commentCount: any; }; }) => {
+    const manualData = configTrabajos[video.id];
+    return {
+      id: video.id,
+      youtubeId: video.id,
+      titulo: video.snippet.title,
+      artista: video.snippet.channelTitle, // O puedes ponerlo manual si prefieres
+      thumbnail: video.snippet.thumbnails.maxresdefault?.url || video.snippet.thumbnails.high.url,
+      fecha: video.snippet.publishedAt.split('T')[0], // Formato YYYY-MM-DD
+      genero: manualData.genero,
+      rol: manualData.rol,
+      destacado: manualData.destacado,
+      descripcion: manualData.descripcion,
+      colaboradores: manualData.colaboradores,
+      stats: {
+        reproducciones: formatNumber(video.statistics.viewCount),
+        likes: formatNumber(video.statistics.likeCount),
+        comentarios: formatNumber(video.statistics.commentCount)
+      },
+      tags: manualData.tags,
+      color: manualData.color
+    };
+  });
+} catch (error) {
+  console.error("Error cargando datos de YouTube:", error);
+}
+
+// 3. CÁLCULOS PARA FILTROS
+const generosUnicos = [...new Set(trabajos.map((t: { genero: any; }) => t.genero))];
+const añosUnicos = [...new Set(trabajos.map((t: { fecha: string; }) => t.fecha.split('-')[0]))].sort().reverse();
+---
+
+<Layout title="Trabajos | ABX Studio">
+  <div class="flex flex-col min-h-screen w-full bg-black relative overflow-hidden">
+    <!-- Efectos de fondo animados -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+      <div class="absolute top-0 left-1/4 w-150 h-150 bg-[#00d3f2] rounded-full mix-blend-multiply filter blur-[150px] opacity-20 animate-pulse"></div>
+      <div class="absolute top-1/2 right-1/4 w-125 h-125 bg-purple-500 rounded-full mix-blend-multiply filter blur-[150px] opacity-15 animate-pulse" style="animation-delay: 2s;"></div>
+      <div class="absolute bottom-0 left-1/2 w-125 h-125 bg-pink-500 rounded-full mix-blend-multiply filter blur-[150px] opacity-10 animate-pulse" style="animation-delay: 4s;"></div>
+    </div>
+
+    <div class="flex-none z-50 relative">
+      <Header transition:persist />
+    </div>
+
+    <main class="flex-1 flex flex-col items-center py-12 px-4 md:py-20 relative z-10">
+      <div class="max-w-7xl w-full mx-auto">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-16 max-w-4xl mx-auto">
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#00d3f2]/10 border border-[#00d3f2]/30 rounded-full text-[#00d3f2] text-sm font-semibold tracking-wide mb-6 backdrop-blur-sm">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path>
+            </svg>
+            PORTFOLIO OFICIAL
+          </div>
+          
+          <h1 class="text-5xl md:text-8xl font-bold text-white mb-6 tracking-tight leading-none">
+            Mis <span class="text-transparent bg-clip-text bg-linear-to-r from-[#00d3f2] via-purple-400 to-pink-400">Trabajos</span>
+          </h1>
+          
+          <p class="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
+            Explora mi portfolio de producción musical. Cada proyecto representa horas de dedicación, creatividad y pasión por el sonido.
+          </p>
+        </div>
+
+        <!-- Stats Dinámicos -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <div class="group relative overflow-hidden bg-linear-to-br from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl rounded-2xl p-6 border border-white/10 text-center hover:border-[#00d3f2]/50 transition-all duration-500">
+            <div class="absolute inset-0 bg-linear-to-br from-[#00d3f2]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="relative z-10">
+              <div class="text-4xl font-bold text-[#00d3f2] mb-2" id="totalTrabajos">{trabajos.length}</div>
+              <div class="text-sm text-gray-400 font-medium">Proyectos</div>
+            </div>
+          </div>
+
+          <div class="group relative overflow-hidden bg-linear-to-br from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl rounded-2xl p-6 border border-white/10 text-center hover:border-purple-400/50 transition-all duration-500">
+            <div class="absolute inset-0 bg-linear-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="relative z-10">
+              <div class="text-4xl font-bold text-purple-400 mb-2">{generosUnicos.length}</div>
+              <div class="text-sm text-gray-400 font-medium">Géneros</div>
+            </div>
+          </div>
+
+          <div class="group relative overflow-hidden bg-linear-to-br from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl rounded-2xl p-6 border border-white/10 text-center hover:border-pink-400/50 transition-all duration-500">
+            <div class="absolute inset-0 bg-linear-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="relative z-10">
+              <div class="text-4xl font-bold text-pink-400 mb-2" id="visibleTrabajos">{trabajos.length}</div>
+              <div class="text-sm text-gray-400 font-medium">Mostrando</div>
+            </div>
+          </div>
+
+          <div class="group relative overflow-hidden bg-linear-to-br from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl rounded-2xl p-6 border border-white/10 text-center hover:border-amber-400/50 transition-all duration-500">
+            <div class="absolute inset-0 bg-linear-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="relative z-10">
+              <div class="text-4xl font-bold text-amber-400 mb-2">{trabajos.filter((t: { destacado: any; }) => t.destacado).length}</div>
+              <div class="text-sm text-gray-400 font-medium">Destacados</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel de Filtros -->
+        <div class="bg-linear-to-br from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl rounded-3xl border border-[#00d3f2]/20 mb-12 overflow-hidden shadow-2xl sticky top-20 z-40">
+          
+          <!-- Búsqueda -->
+          <div class="p-6 border-b border-white/5">
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-gray-500 group-focus-within:text-[#00d3f2] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Buscar por título, artista, género o tags..."
+                class="w-full bg-black/60 border-2 border-white/10 rounded-2xl pl-12 pr-12 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#00d3f2] focus:ring-2 focus:ring-[#00d3f2]/20 transition-all"
+              />
+              <button 
+                id="clearSearch"
+                class="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-white transition-colors  "
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtros -->
+          <div class="grid md:grid-cols-3 gap-6 p-6 border-b border-white/5">
+            
+            <!-- Género -->
+            <div>
+              <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path>
+                </svg>
+                Género
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <button class="filter-btn genero-filter active" data-filter="all" data-type="genero">
+                  Todos
+                </button>
+                {generosUnicos.map(genero => (
+                  <button class="filter-btn genero-filter" data-filter={genero} data-type="genero">
+                    {genero}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Año -->
+            <div>
+              <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                </svg>
+                Año
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <button class="filter-btn año-filter active" data-filter="all" data-type="año">
+                  Todos
+                </button>
+                {añosUnicos.map(año => (
+                  <button class="filter-btn año-filter" data-filter={año} data-type="año">
+                    {año}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Destacados -->
+            <div>
+              <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                Destacados
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <button class="filter-btn destacado-filter active" data-filter="all" data-type="destacado">
+                  Todos
+                </button>
+                <button class="filter-btn destacado-filter" data-filter="true" data-type="destacado">
+                  Solo Destacados
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reset -->
+          <div class="px-6 pb-6">
+            <button
+              id="resetFilters"
+              class="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-gray-400 text-sm font-medium hover:bg-white/10 hover:text-white hover:border-white/20 transition-all flex items-center justify-center gap-2 group"
+            >
+              <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              Resetear Filtros
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid de Trabajos -->
+        <div id="trabajosGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {trabajos.map((trabajo: { genero: string; fecha: string; destacado: boolean; titulo: string; artista: string; tags: string[]; youtubeId: string; rol: string; descripcion: string; colaboradores: string[]; stats: { reproducciones: string; likes: string; comentarios: string; }; color: string; }, index: number) => (
+            <article
+              class="trabajo-item group relative bg-linear-to-br from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden hover:border-white/20 transition-all duration-500 opacity-0 animate-fadeIn"
+              data-genero={trabajo.genero}
+              data-año={trabajo.fecha.split('-')[0]}
+              data-destacado={trabajo.destacado ? "true" : "false"}
+              data-titulo={trabajo.titulo.toLowerCase()}
+              data-tags={trabajo.tags.join(" ").toLowerCase()}
+              style={`animation-delay: ${index * 100}ms`}
+            >
+              
+              <!-- Badge Destacado -->
+              {trabajo.destacado && (
+                <div class="absolute top-4 right-4 z-20 px-3 py-1.5 bg-linear-to-r from-[#00d3f2] to-purple-500 rounded-full text-xs font-bold text-black flex items-center gap-1 shadow-lg">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                  DESTACADO
+                </div>
+              )}
+
+              <!-- Video Container -->
+              <div class="relative overflow-hidden rounded-xl">
+                <lite-youtube
+                  videoid={trabajo.youtubeId}
+                  videotitle={`${trabajo.titulo} - ${trabajo.artista}`}
+                  nocookie
+                  autoload
+                >
+                  <a
+                    class="lite-youtube-fallback"
+                    href={`https://www.youtube.com/watch?v=${trabajo.youtubeId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Ver video en YouTube
+                  </a>
+                </lite-youtube>
+              </div>
+
+
+              <!-- Content -->
+              <div class="p-6">
+                
+                <!-- Header -->
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-semibold text-gray-400">
+                        {trabajo.genero}
+                      </span>
+                      <span class="px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-semibold text-gray-400">
+                        {trabajo.fecha}
+                      </span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-1 group-hover:text-[#00d3f2] transition-colors">
+                      {trabajo.titulo}
+                    </h2>
+                    <p class="text-gray-400 text-sm font-medium">{trabajo.artista}</p>
+                  </div>
+                </div>
+
+                <!-- Rol -->
+                <div class="mb-4 flex items-center gap-2 text-sm">
+                  <svg class="w-4 h-4 text-[#00d3f2]" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                    <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+                  </svg>
+                  <span class="text-gray-300 font-medium">{trabajo.rol}</span>
+                </div>
+
+                <!-- Descripción -->
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                  {trabajo.descripcion}
+                </p>
+
+                <!-- Colaboradores -->
+                {trabajo.colaboradores.length > 0 && (
+                  <div class="mb-4">
+                    <p class="text-xs text-gray-500 mb-2">Colaboradores:</p>
+                    <div class="flex flex-wrap gap-2">
+                      {trabajo.colaboradores.map((colab: unknown) => (
+                        <span class="px-2.5 py-1 bg-white/5 rounded-lg text-xs text-gray-300">
+                          {colab}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <!-- Stats -->
+                {trabajo.stats && (
+                  <div class="grid grid-cols-3 gap-3 mb-4 p-4 bg-black/30 rounded-xl border border-white/5">
+                    <div class="text-center">
+                      <div class="text-lg font-bold text-white">{trabajo.stats.reproducciones}</div>
+                      <div class="text-xs text-gray-500">Views</div>
+                    </div>
+                    <div class="text-center border-x border-white/5">
+                      <div class="text-lg font-bold text-white">{trabajo.stats.likes}</div>
+                      <div class="text-xs text-gray-500">Likes</div>
+                    </div>
+                    <div class="text-center">
+                      <div class="text-lg font-bold text-white">{trabajo.stats.comentarios}</div>
+                      <div class="text-xs text-gray-500">Comments</div>
+                    </div>
+                  </div>
+                )}
+
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {trabajo.tags.map((tag: unknown) => (
+                    <span class="px-3 py-1 bg-linear-to-r from-[#00d3f2]/10 to-purple-500/10 border border-[#00d3f2]/20 rounded-full text-xs font-medium text-[#00d3f2]">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+
+                <!-- CTA -->
+                <a
+                  href={`https://youtube.com/watch?v=${trabajo.youtubeId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#00d3f2] to-purple-500 text-black font-bold rounded-xl hover:shadow-lg hover:shadow-[#00d3f2]/30 transition-all duration-300 group/btn"
+                >
+                  <span>Ver en YouTube</span>
+                  <svg class="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                  </svg>
+                </a>
+              </div>
+
+              <!-- Decoración de borde con color personalizado -->
+              <div 
+                class="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={`box-shadow: inset 0 0 0 2px ${trabajo.color}20, 0 0 30px ${trabajo.color}10;`}
+              ></div>
+            </article>
+          ))}
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="hidden text-center py-32">
+          <div class="inline-block p-8 bg-neutral-900/40 rounded-full mb-6 border border-white/5">
+            <svg class="w-20 h-20 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-white mb-3">No encontramos trabajos</h3>
+          <p class="text-gray-500 text-lg font-light mb-6">
+            Intenta ajustar tus filtros o búsqueda
+          </p>
+          <button
+            id="resetFromNoResults"
+            class="px-6 py-3 bg-[#00d3f2] text-black rounded-xl font-semibold hover:bg-[#00d3f2]/90 transition-all inline-flex items-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            Resetear Filtros
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <div class="flex-none z-50 relative">
+      <Footer transition:persist />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  main {
+    background: radial-gradient(ellipse at top, #001520 0%, #000000 50%, #000000 100%);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .filter-btn {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgb(156, 163, 175);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover {
+    border-color: rgba(0, 211, 242, 0.5);
+    background: rgba(0, 211, 242, 0.1);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .filter-btn.active {
+    background: #00d3f2;
+    color: black;
+    border-color: #00d3f2;
+    font-weight: 700;
+    box-shadow: 0 10px 25px -5px rgba(0, 211, 242, 0.4);
+    transform: scale(1.05);
+  }
+
+  .trabajo-item {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .trabajo-item.hiding {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+
+  .play-button::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 9999px;
+    background: linear-gradient(45deg, #00d3f2, #a855f7);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+  }
+
+  .play-button:hover::before {
+    opacity: 0.5;
+  }
+
+  lite-youtube {
+  border-radius: 1rem;
+  overflow: hidden;
+  --lite-youtube-frame-shadow-visible: no;
+}
+
+.lite-youtube-fallback {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+</style>
+
+<script>
+  function setupTrabajos() {
+    const searchInput = document.getElementById("searchInput") as HTMLInputElement | null;
+    const clearSearchBtn = document.getElementById("clearSearch");
+    const trabajoItems = document.querySelectorAll(".trabajo-item");
+    const noResults = document.getElementById("noResults");
+    const resetBtn = document.getElementById("resetFilters");
+    const resetFromNoResults = document.getElementById("resetFromNoResults");
+    const visibleTrabajosEl = document.getElementById("visibleTrabajos");
+
+    let activeGenero = "all";
+    let activeAño = "all";
+    let activeDestacado = "all";
+
+    function updateVisibleCount(count: number) {
+      if (visibleTrabajosEl) {
+        visibleTrabajosEl.textContent = count.toString();
+      }
+    }
+
+    function filterTrabajos() {
+      const searchTerm = searchInput?.value.toLowerCase() || "";
+      
+      if (clearSearchBtn) {
+        clearSearchBtn.classList.toggle("hidden", searchTerm === "");
+      }
+
+      let visibleCount = 0;
+
+      trabajoItems.forEach((item, index) => {
+        const htmlItem = item as HTMLElement;
+        const titulo = item.getAttribute("data-titulo") || "";
+        const artista = item.getAttribute("data-artista") || "";
+        const genero = item.getAttribute("data-genero") || "";
+        const año = item.getAttribute("data-año") || "";
+        const destacado = item.getAttribute("data-destacado") === "true";
+        const tags = item.getAttribute("data-tags") || "";
+
+        const matchesSearch =
+          titulo.includes(searchTerm) ||
+          artista.includes(searchTerm) ||
+          genero.toLowerCase().includes(searchTerm) ||
+          tags.includes(searchTerm);
+
+        const matchesGenero = activeGenero === "all" || genero === activeGenero;
+        const matchesAño = activeAño === "all" || año === activeAño;
+        const matchesDestacado = activeDestacado === "all" || (activeDestacado === "true" && destacado);
+
+        if (matchesSearch && matchesGenero && matchesAño && matchesDestacado) {
+          htmlItem.classList.remove("hiding");
+          htmlItem.style.display = "block";
+          setTimeout(() => {
+            htmlItem.style.opacity = "1";
+          }, index * 50);
+          visibleCount++;
+        } else {
+          htmlItem.classList.add("hiding");
+          setTimeout(() => {
+            htmlItem.style.display = "none";
+          }, 300);
+        }
+      });
+
+      updateVisibleCount(visibleCount);
+
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? "block" : "none";
+      }
+    }
+
+    // Búsqueda
+    searchInput?.addEventListener("input", filterTrabajos);
+    clearSearchBtn?.addEventListener("click", () => {
+      if (searchInput) {
+        searchInput.value = "";
+        filterTrabajos();
+      }
+    });
+
+    // Filtros de género
+    document.querySelectorAll(".genero-filter").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".genero-filter").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeGenero = btn.getAttribute("data-filter") || "all";
+        filterTrabajos();
+      });
+    });
+
+    // Filtros de año
+    document.querySelectorAll(".año-filter").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".año-filter").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeAño = btn.getAttribute("data-filter") || "all";
+        filterTrabajos();
+      });
+    });
+
+    // Filtros de destacado
+    document.querySelectorAll(".destacado-filter").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".destacado-filter").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeDestacado = btn.getAttribute("data-filter") || "all";
+        filterTrabajos();
+      });
+    });
+
+    // Reset
+    function resetAllFilters() {
+      if (searchInput) searchInput.value = "";
+      
+      activeGenero = "all";
+      activeAño = "all";
+      activeDestacado = "all";
+
+      document.querySelectorAll(".filter-btn").forEach((btn) => {
+        if (btn.getAttribute("data-filter") === "all") {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      filterTrabajos();
+    }
+
+    resetBtn?.addEventListener("click", resetAllFilters);
+    resetFromNoResults?.addEventListener("click", resetAllFilters);
+
+     
+
+    // Animación inicial
+    setTimeout(() => {
+      trabajoItems.forEach((item) => {
+        (item as HTMLElement).style.opacity = "1";
+      });
+    }, 100);
+  }
+
+  document.addEventListener("astro:page-load", setupTrabajos);
+</script>
