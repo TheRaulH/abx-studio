@@ -1,9 +1,9 @@
 ---
 import Footer from "../sections/Footer.astro";
 import Header from "../sections/Header.astro";
-import "../../public/favicon.svg";
 import "./Global.css";
 import { ClientRouter } from "astro:transitions"; // Importante
+
 const title =
   Astro.props.title ||
   "ABX STUDIO | Mezcla, Mastering y Beat Making Profesional";
@@ -60,7 +60,7 @@ const description =
     <meta name="twitter:image" content="https://tudominio.com/og-image.jpg" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -71,6 +71,10 @@ const description =
 
     <link rel="stylesheet" href="/src/layouts/Global.css" />
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1/lite-youtube.min.js"
+    ></script>
   </head>
   <body
     class="[&::-webkit-scrollbar]:w-2
