@@ -10,7 +10,7 @@ const isHome = pathname === "/" || pathname === "";
     href="/promo"
     id="promo-banner"
     class={`
-      w-full h-10 bg-linear-to-r from-white to-gray-300 text-black flex items-center justify-center text-sm md:text-base font-semibold fixed top-0 left-0 z-50 shadow-lg transition-transform duration-300 hover:from-gray-100 hover:to-gray-400
+      w-full h-10 bg-gradient-to-r from-white to-gray-300 text-black flex items-center justify-center text-sm md:text-base font-semibold fixed top-0 left-0 z-50 shadow-lg transition-transform duration-300 hover:from-gray-100 hover:to-gray-400
       ${isHome ? "animate-fade-in-down" : ""} 
     `}
   >
@@ -97,15 +97,16 @@ const isHome = pathname === "/" || pathname === "";
       id="mobile-menu-button"
       class="lg:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5 focus:outline-none"
       aria-label="Menú de navegación"
+      aria-expanded="false"
     >
       <span
-        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line-1"
+        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line"
       ></span>
       <span
-        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line-2"
+        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line"
       ></span>
       <span
-        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line-3"
+        class="block w-6 h-0.5 bg-white transition-all duration-300 menu-line"
       ></span>
     </button>
   </nav>
@@ -115,6 +116,7 @@ const isHome = pathname === "/" || pathname === "";
     id="mobile-menu"
     class="fixed left-0 w-full backdrop-blur-md bg-black/90 text-white z-30 overflow-hidden transition-all duration-500 ease-in-out"
     style="max-height: 0; top: 104px;"
+    aria-hidden="true"
   >
     <div class="flex flex-col items-center gap-6 py-8 font-['Lato']">
       <a
@@ -152,97 +154,239 @@ const isHome = pathname === "/" || pathname === "";
 <div class="h-26 bg-transparent"></div>
 
 <script>
-  // Funcionalidad del menú móvil
-  const mobileMenuButton = document.getElementById("mobile-menu-button");
-  const mobileMenu = document.getElementById("mobile-menu");
-  const menuLines = {
-    line1: document.querySelector(".menu-line-1") as HTMLElement,
-    line2: document.querySelector(".menu-line-2") as HTMLElement,
-    line3: document.querySelector(".menu-line-3") as HTMLElement,
-  };
+  // Clase para gestionar el estado del menú móvil
+  class MobileMenuManager {
+    private isOpen = false;
+    private button: HTMLElement | null;
+    private menu: HTMLElement | null;
+    private menuLines: HTMLElement[];
+    private banner: HTMLElement | null;
+    private nav: HTMLElement | null;
+    private lastScroll = 0;
+    private resizeTimeout: number | null = null;
 
-  let isMenuOpen = false;
+    constructor() {
+      this.button = document.getElementById("mobile-menu-button");
+      this.menu = document.getElementById("mobile-menu");
+      this.menuLines = Array.from(document.querySelectorAll(".menu-line"));
+      this.banner = document.getElementById("promo-banner");
+      this.nav = document.getElementById("main-nav");
 
-  mobileMenuButton?.addEventListener("click", () => {
-    isMenuOpen = !isMenuOpen;
+      this.init();
+    }
 
-    if (isMenuOpen) {
-      // Abrir menú
-      if (mobileMenu) mobileMenu.style.maxHeight = "400px";
+    private init() {
+      // Asegurar que el menú esté cerrado al cargar
+      this.closeMenu(false);
+
+      // Event listeners
+      this.button?.addEventListener("click", () => this.toggleMenu());
+
+      // Cerrar menú al hacer clic en enlaces
+      document.querySelectorAll(".mobile-menu-link").forEach((link) => {
+        link.addEventListener("click", () => this.closeMenu());
+      });
+
+      // Scroll handler
+      window.addEventListener("scroll", () => this.handleScroll(), {
+        passive: true,
+      });
+
+      // Resize handler con debounce
+      window.addEventListener("resize", () => this.handleResize());
+
+      // Cerrar menú al cambiar de página (para SPAs)
+      document.addEventListener("astro:page-load", () => this.closeMenu(false));
+
+      // Listener para transiciones de Astro
+      document.addEventListener("astro:before-preparation", () =>
+        this.closeMenu(false)
+      );
+    }
+
+    private toggleMenu() {
+      if (this.isOpen) {
+        this.closeMenu();
+      } else {
+        this.openMenu();
+      }
+    }
+
+    private openMenu() {
+      this.isOpen = true;
+
+      if (this.menu) {
+        this.menu.style.maxHeight = "400px";
+        this.menu.setAttribute("aria-hidden", "false");
+      }
+
+      if (this.button) {
+        this.button.setAttribute("aria-expanded", "true");
+      }
 
       // Animar hamburguesa a X
-      if (menuLines.line1) {
-        menuLines.line1.style.transform = "rotate(45deg) translateY(8px)";
+      if (this.menuLines.length === 3) {
+        this.menuLines[0].style.transform = "rotate(45deg) translateY(8px)";
+        this.menuLines[1].style.opacity = "0";
+        this.menuLines[2].style.transform = "rotate(-45deg) translateY(-8px)";
       }
-      if (menuLines.line2) {
-        menuLines.line2.style.opacity = "0";
-      }
-      if (menuLines.line3) {
-        menuLines.line3.style.transform = "rotate(-45deg) translateY(-8px)";
-      }
-    } else {
-      // Cerrar menú
-      if (mobileMenu) mobileMenu.style.maxHeight = "0";
 
-      // Restaurar hamburguesa
-      if (menuLines.line1) {
-        menuLines.line1.style.transform = "none";
-      }
-      if (menuLines.line2) {
-        menuLines.line2.style.opacity = "1";
-      }
-      if (menuLines.line3) {
-        menuLines.line3.style.transform = "none";
-      }
-    }
-  });
-
-  // Cerrar menú al hacer clic en un enlace
-  const mobileMenuLinks = document.querySelectorAll(".mobile-menu-link");
-  mobileMenuLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      isMenuOpen = false;
-      if (mobileMenu) mobileMenu.style.maxHeight = "0";
-
-      // Restaurar hamburguesa
-      if (menuLines.line1) menuLines.line1.style.transform = "none";
-      if (menuLines.line2) menuLines.line2.style.opacity = "1";
-      if (menuLines.line3) menuLines.line3.style.transform = "none";
-    });
-  });
-
-  // Ocultar/mostrar banner al hacer scroll
-  let lastScroll = 0;
-  const banner = document.getElementById("promo-banner");
-  const nav = document.getElementById("main-nav");
-  const mobileMenuEl = document.getElementById("mobile-menu");
-
-  window.addEventListener("scroll", () => {
-    const currentScroll = window.scrollY;
-
-    if (currentScroll > 50 && currentScroll > lastScroll) {
-      // Scroll hacia abajo - ocultar banner
-      if (banner) banner.style.transform = "translateY(-100%)";
-      if (nav) nav.style.top = "0";
-      if (mobileMenuEl) mobileMenuEl.style.top = "64px";
-    } else if (currentScroll < 50) {
-      // Cerca del top - mostrar banner
-      if (banner) banner.style.transform = "translateY(0)";
-      if (nav) nav.style.top = "40px";
-      if (mobileMenuEl) mobileMenuEl.style.top = "104px";
+      // Prevenir scroll del body
+      document.body.style.overflow = "hidden";
     }
 
-    lastScroll = currentScroll;
+    private closeMenu(animate = true) {
+      this.isOpen = false;
 
-    // Cerrar menú móvil si está abierto y se hace scroll
-    if (Math.abs(currentScroll - lastScroll) > 50 && isMenuOpen) {
-      isMenuOpen = false;
-      if (mobileMenu) mobileMenu.style.maxHeight = "0";
+      if (this.menu) {
+        this.menu.style.maxHeight = "0";
+        this.menu.setAttribute("aria-hidden", "true");
+      }
+
+      if (this.button) {
+        this.button.setAttribute("aria-expanded", "false");
+      }
 
       // Restaurar hamburguesa
-      if (menuLines.line1) menuLines.line1.style.transform = "none";
-      if (menuLines.line2) menuLines.line2.style.opacity = "1";
-      if (menuLines.line3) menuLines.line3.style.transform = "none";
+      this.menuLines.forEach((line) => {
+        line.style.transform = "none";
+        line.style.opacity = "1";
+      });
+
+      // Restaurar scroll del body
+      document.body.style.overflow = "";
     }
+
+    private handleScroll() {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > 50 && currentScroll > this.lastScroll) {
+        // Scroll hacia abajo - ocultar banner
+        if (this.banner) this.banner.style.transform = "translateY(-100%)";
+        if (this.nav) this.nav.style.top = "0";
+        if (this.menu) this.menu.style.top = "64px";
+      } else if (currentScroll < 50) {
+        // Cerca del top - mostrar banner
+        if (this.banner) this.banner.style.transform = "translateY(0)";
+        if (this.nav) this.nav.style.top = "40px";
+        if (this.menu) this.menu.style.top = "104px";
+      }
+
+      // Cerrar menú móvil al hacer scroll significativo
+      if (Math.abs(currentScroll - this.lastScroll) > 50 && this.isOpen) {
+        this.closeMenu();
+      }
+
+      this.lastScroll = currentScroll;
+    }
+
+    private handleResize() {
+      // Debounce del resize
+      if (this.resizeTimeout) {
+        clearTimeout(this.resizeTimeout);
+      }
+
+      this.resizeTimeout = window.setTimeout(() => {
+        // Cerrar menú si cambiamos a desktop
+        if (window.innerWidth >= 1024 && this.isOpen) {
+          this.closeMenu(false);
+        }
+
+        // Asegurar que el estado sea correcto
+        if (window.innerWidth >= 1024) {
+          this.closeMenu(false);
+          document.body.style.overflow = "";
+        }
+      }, 150);
+    }
+
+    // Método público para cerrar el menú desde fuera si es necesario
+    public forceClose() {
+      this.closeMenu(false);
+    }
+  }
+
+  // Inicializar el gestor del menú
+  let menuManager: MobileMenuManager | null = null;
+
+  // Función de inicialización
+  function initMenu() {
+    menuManager = new MobileMenuManager();
+  }
+
+  // Inicializar en carga de página
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMenu);
+  } else {
+    initMenu();
+  }
+
+  // Reinicializar en cada cambio de página de Astro
+  document.addEventListener("astro:page-load", () => {
+    if (menuManager) {
+      menuManager.forceClose();
+    }
+    initMenu();
   });
 </script>
+
+<style>
+  /* Asegurar que las animaciones personalizadas funcionen */
+  @keyframes fade-in-down {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fade-in-down {
+    animation: fade-in-down 0.6s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+
+  .animate-slide-in-left {
+    animation: slide-in-left 0.6s ease-out;
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.6s ease-out;
+  }
+</style>
