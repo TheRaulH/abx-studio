@@ -26,7 +26,6 @@ const beats = [
     key: "Cm",
     tags: ["Voz", "Chill", "Vintage"],
   },
-  
 ];
 
 // Generar géneros únicos automáticamente
@@ -40,19 +39,6 @@ const moodsUnicos = [...new Set(beats.map((beat) => beat.mood))];
   <div
     class="flex flex-col min-h-screen w-full bg-black relative overflow-hidden"
   >
-    <!-- Efectos de fondo -->
-    <div class="fixed inset-0 pointer-events-none z-0">
-      <div
-        class="absolute top-0 left-1/4 w-96 h-96 bg-[#00d3f2] rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-pulse"
-      >
-      </div>
-      <div
-        class="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-pulse"
-        style="animation-delay: 2s;"
-      >
-      </div>
-    </div>
-
     <div class="flex-none z-50 relative">
       <Header transition:persist />
     </div>
@@ -148,7 +134,7 @@ const moodsUnicos = [...new Set(beats.map((beat) => beat.mood))];
               />
               <button
                 id="clearSearch"
-                class="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-white transition-colors hidden"
+                class="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-white transition-colors"
                 aria-label="Limpiar búsqueda"
               >
                 <svg
